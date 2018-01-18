@@ -24,6 +24,6 @@ memInt')来代替Send(p,d)。
 如下，我们声明一个具有4个参数的constant operator--Send：
                                             CONSTANT Send(_,_,_,_)
                                             
-这表示Send(p,d,miOld,miNew)是一个对任意p，d，miOld和miNew的表达式，但是这个表达式的值无法判定。我们希望当一个Send step完成时，这个表达式的值为Boolean。
-我们可以通过假设来实现这个目的：
+这表示Send(p,d,miOld,miNew)是一个对任意p，d，miOld和miNew的表达式，但是这个表达式的值无法判定。我们希望当一个Send step完成时，这个表达式的值为
+Boolean。我们可以通过假设来实现这个目的：
                             
