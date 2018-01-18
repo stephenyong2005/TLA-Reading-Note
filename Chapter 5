@@ -1,1 +1,29 @@
-di
+                                                      第五章 A Caching Memory
+                                                      
+一个内存系统由一组通过一些抽象的借口与内存相连的多个处理器组成，文章中有memInt来表示这些接口。如下图所示，
+
+                                                       |----------|            
+                                processor 0  <---->    |          |            ----------------
+                                                       |  memInt  |   <---->   |    MEMORY    |
+                                processor n  <---->    |          |            ----------------
+                                                       |----------|
+本章中首先说明（specify）内存的用途，然后说明一种特殊的实现（带缓存的内存）。首先说明memory interface，这个说明在两个specification中时通用的。
+
+5.1 The Memory Interface
+
+如第3章描述的利用握手协议描述的异步接口。在下一次发送数据之前必须确认上一次发送的数据已经被接收。在本章中的描述我们将数据的分离发送（Send）和接收
+（Receive）。Send step：处理器（processor）发送数据给内存（memory）；Reply step：内存向处理器发送数据。处理器之间不互相发送数据，而且内存一次仅向
+一个处理器发送数据。
+
+我们使用变量memInt来表示内存接口的状态（状态表示对全部变量的赋值）。一个Send step以某种方式改变memInt变量，但是在这里我们不想详细的说明这种改变是如
+何实现的。我们经常通过将未说明的事情设置为specification中的parameter来实现这种隐藏。例如，在第4.4小节中的有界FIFO（bounded FIFO）中，我们通过设置
+buffer的大小为parameter N以省略对buffer的说明。我们也将通过声明一个Send参数以使Send(p,s)能够描述memInt如何被一个Send step改变，Send(p,d)表示处理
+器p向内存发送数据d。然而，TLA+仅仅提供CONSTANT和VARIABLE参数而没有action参数。因此我们将Send声明为一个constane operator并利用Send(p,d,memInt,
+memInt')来代替Send(p,d)。
+
+如下，我们声明一个具有4个参数的constant operator--Send：
+                                            CONSTANT Send(_,_,_,_)
+                                            
+这表示Send(p,d,miOld,miNew)是一个对任意p，d，miOld和miNew的表达式，但是这个表达式的值无法判定。我们希望当一个Send step完成时，这个表达式的值为Boolean。
+我们可以通过假设来实现这个目的：
+                            
